@@ -70,6 +70,27 @@ npm run dev                 # app on http://localhost:5173
 | Admin    | admin@shopsphere.dev     | admin123    |
 | Customer | customer@shopsphere.dev  | customer123 |
 
+## 📸 Screenshots
+
+Captured from the locally running app with the seeded demo products and admin
+account. Addresses shown are demonstration data; product images use the default
+ShopSphere placeholder.
+
+### Home — search, categories and product cards
+![ShopSphere home page](docs/screenshots/home.jpg)
+
+### Product — description, stock and quantity selection
+![Product detail for Wireless Earbuds Pro](docs/screenshots/product.jpg)
+
+### Cart — quantity controls and order total
+![Shopping cart with one demo product](docs/screenshots/cart.jpg)
+
+### Checkout — shipping address and cash on delivery
+![Checkout with a demonstration shipping address](docs/screenshots/checkout.jpg)
+
+### Admin — product management
+![Admin product form and product table](docs/screenshots/admin.jpg)
+
 ## 🔌 API reference
 
 | Method | Endpoint                  | Access   | Description              |
