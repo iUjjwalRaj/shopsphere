@@ -101,3 +101,103 @@ textarea { min-height: 80px; }
 .footer { text-align: center; color: var(--muted); padding: 24px; border-top: 1px solid var(--border); }
 
 /* TODO: the layout breaks on small screens (<600px) - see "Mobile responsive" issue */
+
+/* =========================================================
+   Responsive layout adjustments (Issue #4)
+   Desktop-first: the base styles above stay unchanged and
+   these media queries only override them on smaller screens.
+   Breakpoints: 768px (tablets / large phones) and
+   480px (small phones, e.g. 375px width).
+   ========================================================= */
+
+/* ---------- Tablets and large phones (up to 768px) ---------- */
+@media (max-width: 768px) {
+  /* NAVBAR: reduce side padding and add a gap so the brand
+     and links don't touch when space gets tight. */
+  .navbar {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  /* PRODUCT DETAIL: two columns are too narrow on small screens,
+     so use one column and stack the image above the info. */
+  .detail {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  /* CART ITEM: let image, name and controls wrap onto the next
+     line instead of overflowing the screen. */
+  .cart-item {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .cart-item .grow {
+    flex: 1 1 180px;
+  }
+
+  /* ADMIN TABLE: make the table its own horizontally scrollable
+     box so only the table scrolls, not the whole page. */
+  .table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Keep cell text on one line so columns stay readable. */
+  .table th,
+  .table td {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- Small phones (up to 480px) ---------- */
+@media (max-width: 480px) {
+  /* NAVBAR: stack the brand above the links, left-aligned. */
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .nav-links {
+    width: 100%;
+    gap: 8px 12px;
+  }
+
+  /* CART: tighter spacing and smaller buttons on narrow screens. */
+  .cart-item .row {
+    gap: 6px;
+  }
+  .cart-item .btn {
+    padding: 6px 12px;
+  }
+
+  /* CART SUMMARY: stack vertically and stretch to full width. */
+  .summary {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 12px;
+  }
+
+  /* FORMS: less inner padding to give inputs more width. */
+  .form {
+    padding: 16px;
+  }
+
+  /* Let space-between rows wrap instead of overflowing. */
+  .row-between {
+    flex-wrap: wrap;
+  }
+}
+
+/* ADMIN FORM: let input rows wrap and shrink on small screens,
+   so fields like Stock and Brand don't overflow the card. */
+@media (max-width: 480px) {
+  .admin-form .row {
+    flex-wrap: wrap;
+  }
+  .admin-form .row > * {
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+}
