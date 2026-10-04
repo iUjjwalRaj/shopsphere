@@ -1,6 +1,17 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const cartItemSchema = new mongoose.Schema(
+  {
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    name: String,
+    price: Number,
+    image: String,
+    quantity: { type: Number, required: true, min: 1, default: 1 },
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -13,6 +24,7 @@ const userSchema = new mongoose.Schema(
       state: String,
       pincode: String,
     },
+    cart: { type: [cartItemSchema], default: [] },
   },
   { timestamps: true }
 );
