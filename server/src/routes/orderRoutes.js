@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createOrder,
+  cancelOrder,
   getMyOrders,
   getOrder,
   getAllOrders,
@@ -13,8 +14,13 @@ const router = Router();
 router.use(protect);
 
 router.route('/').post(createOrder).get(adminOnly, getAllOrders);
+
 router.get('/mine', getMyOrders);
+
+router.patch('/:id/cancel', cancelOrder);
+
 router.get('/:id', getOrder);
+
 router.patch('/:id/status', adminOnly, updateOrderStatus);
 
 export default router;
