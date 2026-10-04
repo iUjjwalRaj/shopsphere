@@ -11,6 +11,22 @@
   --radius: 10px;
 }
 
+[data-theme="dark"] {
+  --bg: #12121a;
+  --surface: #1e1e2d;
+  --text: #f0f0f8;
+  --muted: #9a9ab2;
+  --primary: #8b6dfc;
+  --primary-dark: #7451eb;
+  --danger: #ff5c73;
+  --success: #3dd685;
+  --border: #2e2e42;
+}
+
+[data-theme="dark"] .tag {
+  background: #2a2444;
+}
+
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -51,7 +67,7 @@ img { max-width: 100%; display: block; }
 .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 input, select, textarea {
   padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-  font: inherit; background: var(--surface);
+  font: inherit; background: var(--surface); color: var(--text);
 }
 .filters input { flex: 1; min-width: 200px; }
 textarea { min-height: 80px; }
