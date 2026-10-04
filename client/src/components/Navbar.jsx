@@ -1,10 +1,12 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
   const { totalItems } = useCart();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,6 +24,15 @@ export default function Navbar() {
         <NavLink to="/cart">Cart ({totalItems})</NavLink>
         {user && <NavLink to="/orders">My Orders</NavLink>}
         {isAdmin && <NavLink to="/admin/products">Admin</NavLink>}
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
         {user ? (
           <>
             <span className="muted">Hi, {user.name.split(' ')[0]}</span>
