@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema(
       state: String,
       pincode: String,
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );

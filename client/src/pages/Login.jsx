@@ -27,6 +27,9 @@ export default function Login() {
         onChange={(e) => setForm({ ...form, email: e.target.value })} />
       <input type="password" required placeholder="Password" value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })} />
+      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '-4px 0 4px', fontSize: '0.9rem' }}>
+        <Link to="/forgot-password">Forgot password?</Link>
+      </div>
       {error && <p className="error">{error}</p>}
       <button className="btn full">Login</button>
       <p className="muted">New here? <Link to="/register">Create an account</Link></p>
