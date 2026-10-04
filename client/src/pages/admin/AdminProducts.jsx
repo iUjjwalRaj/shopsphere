@@ -11,7 +11,10 @@ export default function AdminProducts() {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
 
-  const load = () => api.get('/products').then(({ data }) => setProducts(data));
+  const load = () =>
+    api
+      .get('/products', { params: { limit: 100 } })
+      .then(({ data }) => setProducts(Array.isArray(data) ? data : (data.products || [])));
   useEffect(() => {
     load();
   }, []);
