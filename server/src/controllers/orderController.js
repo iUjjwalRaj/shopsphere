@@ -19,54 +19,64 @@ export const createOrder = asyncHandler(async (req, res) => {
   }
 
   const verifiedItems = [];
+  const decrementedItems = [];
   let totalAmount = 0;
 
-  // Check that every product exists, has enough stock, and use database prices
-  for (const item of items) {
-    if (!item.quantity || item.quantity < 1) {
-      res.status(400);
-      throw new Error('Quantity must be at least 1');
+  try {
+    for (const item of items) {
+      if (!item.quantity || item.quantity < 1) {
+        res.status(400);
+        throw new Error('Quantity must be at least 1');
+      }
+
+      // Atomically decrement stock only if available stock is >= requested quantity
+      const product = await Product.findOneAndUpdate(
+        { _id: item.product, stock: { $gte: item.quantity } },
+        { $inc: { stock: -item.quantity } },
+        { new: true }
+      );
+
+      if (!product) {
+        const existing = await Product.findById(item.product);
+        if (!existing) {
+          res.status(404);
+          throw new Error(`Product not found: ${item.product}`);
+        }
+        res.status(400);
+        throw new Error(`Not enough stock for ${existing.name}`);
+      }
+
+      decrementedItems.push({ product: product._id, quantity: item.quantity });
+
+      // Use the price and name stored in the database, never the client's values
+      verifiedItems.push({
+        product: product._id,
+        name: product.name,
+        price: product.price,
+        quantity: item.quantity,
+      });
+      totalAmount += product.price * item.quantity;
     }
 
-    const product = await Product.findById(item.product);
-    if (!product) {
-      res.status(404);
-      throw new Error(`Product not found: ${item.product}`);
-    }
-    if (product.stock < item.quantity) {
-      res.status(400);
-      throw new Error(`Not enough stock for ${product.name}`);
-    }
-
-    verifiedItems.push({
-      product: product._id,
-      name: product.name,
-      price: product.price,
-      quantity: item.quantity,
+    const order = await Order.create({
+      user: req.user._id,
+      items: verifiedItems,
+      shippingAddress: {
+        ...shippingAddress,
+        pincode,
+      },
+      paymentMethod,
+      totalAmount,
     });
 
-    totalAmount += product.price * item.quantity;
+    res.status(201).json(order);
+  } catch (error) {
+    // Roll back already decremented items if a later item fails
+    for (const item of decrementedItems) {
+      await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } });
+    }
+    throw error;
   }
-
-  const order = await Order.create({
-    user: req.user._id,
-    items: verifiedItems,
-    shippingAddress: {
-      ...shippingAddress,
-      pincode,
-    },
-    paymentMethod,
-    totalAmount,
-  });
-
-  // Reduce stock after an order is successfully placed
-  for (const item of verifiedItems) {
-    await Product.findByIdAndUpdate(item.product, {
-      $inc: { stock: -item.quantity },
-    });
-  }
-
-  res.status(201).json(order);
 });
 
 // PATCH /api/orders/:id/cancel
