@@ -1,19 +1,65 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import api from '../api/client.js';
+import { useAuth } from './AuthContext.jsx';
 
 const CartContext = createContext(null);
 const STORAGE_KEY = 'shopsphere_cart';
 
-// The cart lives only in localStorage for now.
-// See issue: "Persist cart on the server for logged-in users".
 export function CartProvider({ children }) {
+  const { user } = useAuth();
   const [items, setItems] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   });
+  const initialSyncRef = useRef(false);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    if (!user) {
+      initialSyncRef.current = false;
+      return;
+    }
+
+    let isMounted = true;
+    api
+      .get('/cart')
+      .then(({ data }) => {
+        if (!isMounted) return;
+        setItems((currentLocal) => {
+          const serverItems = Array.isArray(data) ? data : [];
+          const merged = [...serverItems];
+          for (const localItem of currentLocal) {
+            const existing = merged.find(
+              (s) => String(s.product) === String(localItem.product)
+            );
+            if (existing) {
+              existing.quantity = Math.max(existing.quantity, localItem.quantity);
+            } else {
+              merged.push(localItem);
+            }
+          }
+          api.put('/cart', { items: merged }).catch(() => {});
+          initialSyncRef.current = true;
+          return merged;
+        });
+      })
+      .catch(() => {
+        initialSyncRef.current = true;
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (user && initialSyncRef.current) {
+      api.put('/cart', { items }).catch(() => {});
+    }
+  }, [items, user]);
 
   const addToCart = (product, quantity = 1) => {
     setItems((prev) => {
