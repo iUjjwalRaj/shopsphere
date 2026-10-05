@@ -7,12 +7,14 @@ import {
   updateOrderStatus,
 } from '../controllers/orderController.js';
 import { protect, adminOnly } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { orderSchema } from '../middleware/schemas.js';
 
 const router = Router();
 
 router.use(protect);
 
-router.route('/').post(createOrder).get(adminOnly, getAllOrders);
+router.route('/').post(validate(orderSchema), createOrder).get(adminOnly, getAllOrders);
 router.get('/mine', getMyOrders);
 router.get('/:id', getOrder);
 router.patch('/:id/status', adminOnly, updateOrderStatus);
