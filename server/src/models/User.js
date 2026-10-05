@@ -25,6 +25,8 @@ const userSchema = new mongoose.Schema(
       pincode: String,
     },
     cart: { type: [cartItemSchema], default: [] },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );
