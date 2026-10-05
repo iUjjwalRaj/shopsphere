@@ -14,7 +14,10 @@ export default function AdminProducts() {
   const [productToDelete, setProductToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  const load = () => api.get('/products').then(({ data }) => setProducts(data));
+  const load = () =>
+    api
+      .get('/products', { params: { limit: 100 } })
+      .then(({ data }) => setProducts(Array.isArray(data) ? data : (data.products || [])));
   useEffect(() => {
     load();
   }, []);
