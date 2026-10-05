@@ -71,6 +71,8 @@ textarea { min-height: 80px; }
 .grow { flex: 1; }
 .muted { color: var(--muted); }
 .error { color: var(--danger); }
+.field-error { font-size: 0.85rem; margin-top: -6px; margin-bottom: 2px; }
+input.input-error { border-color: var(--danger); outline-color: var(--danger); }
 .success { color: var(--success); }
 .loader { text-align: center; color: var(--muted); padding: 40px; }
 
