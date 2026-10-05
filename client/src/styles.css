@@ -119,7 +119,7 @@ input.input-error { border-color: var(--danger); outline-color: var(--danger); }
 
 /* TODO: the layout breaks on small screens (<600px) - see "Mobile responsive" issue */
 
-/* =========================================================
+/* ==================================================
    Responsive layout adjustments (Issue #4)
    Desktop-first: the base styles above stay unchanged and
    these media queries only override them on smaller screens.
@@ -218,3 +218,21 @@ input.input-error { border-color: var(--danger); outline-color: var(--danger); }
     flex: 1 1 100%;
   }
 }
+=======
+/* ── Product Reviews ── */
+.reviews-section { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 20px; }
+.reviews-section h3 { margin: 0 0 16px; font-size: 1.1rem; }
+.reviews-section h4 { margin: 20px 0 10px; font-size: 1rem; }
+
+.review-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.review-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.review-stars { color: #f5a623; font-size: 1rem; letter-spacing: 2px; }
+.review-author { font-weight: 600; font-size: 0.9rem; }
+.review-date { font-size: 0.8rem; }
+.review-comment { margin: 0; line-height: 1.5; }
+
+.review-form { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+.review-form label { font-size: 0.875rem; font-weight: 600; }
+.review-form select, .review-form textarea { width: 100%; }
+
