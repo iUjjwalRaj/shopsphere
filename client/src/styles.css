@@ -115,6 +115,37 @@ input.input-error { border-color: var(--danger); outline-color: var(--danger); }
 }
 .modal-actions {
   display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;
+.wishlist-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+.wishlist-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: var(--bg);
+}
+.wishlist-btn.active {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: #fdf2f4;
+}
+
+.btn-danger-hover:hover {
+  background: var(--danger) !important;
+  border-color: var(--danger) !important;
+  color: #fff !important;
 }
 
 /* TODO: the layout breaks on small screens (<600px) - see "Mobile responsive" issue */
