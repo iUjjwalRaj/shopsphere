@@ -18,8 +18,16 @@ export const createOrder = asyncHandler(async (req, res) => {
     throw new Error('Pincode must be exactly 6 digits and cannot start with 0');
   }
 
-  // Check that every product exists and has enough stock
+  const verifiedItems = [];
+  let totalAmount = 0;
+
+  // Check that every product exists, has enough stock, and use database prices
   for (const item of items) {
+    if (!item.quantity || item.quantity < 1) {
+      res.status(400);
+      throw new Error('Quantity must be at least 1');
+    }
+
     const product = await Product.findById(item.product);
     if (!product) {
       res.status(404);
@@ -29,13 +37,20 @@ export const createOrder = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error(`Not enough stock for ${product.name}`);
     }
-  }
 
-  const totalAmount = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    verifiedItems.push({
+      product: product._id,
+      name: product.name,
+      price: product.price,
+      quantity: item.quantity,
+    });
+
+    totalAmount += product.price * item.quantity;
+  }
 
   const order = await Order.create({
     user: req.user._id,
-    items,
+    items: verifiedItems,
     shippingAddress: {
       ...shippingAddress,
       pincode,
@@ -45,7 +60,7 @@ export const createOrder = asyncHandler(async (req, res) => {
   });
 
   // Reduce stock after an order is successfully placed
-  for (const item of items) {
+  for (const item of verifiedItems) {
     await Product.findByIdAndUpdate(item.product, {
       $inc: { stock: -item.quantity },
     });
