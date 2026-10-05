@@ -9,6 +9,22 @@
   --success: #1f9d55;
   --border: #e4e4ee;
   --radius: 10px;
+  --tag-bg: #efeafd;
+  --tag-color: var(--primary);
+}
+
+[data-theme="dark"] {
+  --bg: #121218;
+  --surface: #1e1e28;
+  --text: #ececf4;
+  --muted: #9a9ab2;
+  --primary: #7c5cff;
+  --primary-dark: #6342e6;
+  --danger: #ff4d6d;
+  --success: #2ed573;
+  --border: #2e2e3e;
+  --tag-bg: #2a244d;
+  --tag-color: #a58cff;
 }
 
 * { box-sizing: border-box; }
@@ -34,6 +50,29 @@ img { max-width: 100%; display: block; }
 .nav-links a { color: var(--text); }
 .nav-links a.active { color: var(--primary); font-weight: 600; }
 
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.theme-toggle:hover {
+  background: var(--bg);
+  border-color: var(--muted);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .btn {
   display: inline-block; padding: 9px 16px; border: none; border-radius: var(--radius);
   background: var(--primary); color: #fff !important; cursor: pointer; font-size: 0.95rem;
@@ -51,7 +90,7 @@ img { max-width: 100%; display: block; }
 .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 input, select, textarea {
   padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-  font: inherit; background: var(--surface);
+  font: inherit; background: var(--surface); color: var(--text);
 }
 .filters input { flex: 1; min-width: 200px; }
 textarea { min-height: 80px; }
@@ -63,7 +102,7 @@ textarea { min-height: 80px; }
 .product-name { color: var(--text); font-weight: 600; }
 .tag {
   align-self: flex-start; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em;
-  background: #efeafd; color: var(--primary); padding: 2px 8px; border-radius: 999px;
+  background: var(--tag-bg); color: var(--tag-color); padding: 2px 8px; border-radius: 999px;
 }
 
 .row { display: flex; gap: 10px; align-items: center; }
