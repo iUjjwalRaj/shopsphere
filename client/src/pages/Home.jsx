@@ -3,24 +3,44 @@ import api, { getErrorMessage } from '../api/client.js';
 import ProductCard from '../components/ProductCard.jsx';
 import Loader from '../components/Loader.jsx';
 import { CATEGORIES } from '../utils/format.js';
+import useDebounce from '../hooks/useDebounce.js';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({ search: '', category: '', sort: 'newest' });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const debouncedSearch = useDebounce(filters.search, 400);
 
-  useEffect(() => {
-    // NOTE: this fires a request on every keystroke - see "Debounce search" issue.
+  const loadProducts = () => {
     setLoading(true);
     api
-      .get('/products', { params: filters })
-      .then(({ data }) => setProducts(data))
+      .get('/products', {
+        params: { search: debouncedSearch, category: filters.category, sort: filters.sort, page, limit: 12 },
+      })
+      .then(({ data }) => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+          setTotalPages(1);
+        } else {
+          setProducts(data.products || []);
+          setTotalPages(data.totalPages || 1);
+        }
+      })
       .catch((err) => setError(getErrorMessage(err)))
       .finally(() => setLoading(false));
-  }, [filters]);
+  };
 
-  const update = (key) => (e) => setFilters((f) => ({ ...f, [key]: e.target.value }));
+  useEffect(() => {
+    loadProducts();
+  }, [debouncedSearch, filters.category, filters.sort, page]);
+
+  const update = (key) => (e) => {
+    setFilters((f) => ({ ...f, [key]: e.target.value }));
+    setPage(1);
+  };
 
   return (
     <section>
@@ -51,11 +71,35 @@ export default function Home() {
       ) : products.length === 0 ? (
         <p className="muted">No products found.</p>
       ) : (
-        <div className="grid">
-          {products.map((p) => (
-            <ProductCard key={p._id} product={p} />
-          ))}
-        </div>
+        <>
+          <div className="grid">
+            {products.map((p) => (
+              <ProductCard key={p._id} product={p} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="row pagination" style={{ justifyContent: 'center', marginTop: '28px', gap: '16px' }}>
+              <button
+                className="btn btn-ghost"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                ← Previous
+              </button>
+              <span className="muted" style={{ alignSelf: 'center' }}>
+                Page {page} of {totalPages}
+              </span>
+              <button
+                className="btn btn-ghost"
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

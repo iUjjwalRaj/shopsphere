@@ -9,6 +9,22 @@
   --success: #1f9d55;
   --border: #e4e4ee;
   --radius: 10px;
+  --tag-bg: #efeafd;
+  --tag-color: var(--primary);
+}
+
+[data-theme="dark"] {
+  --bg: #121218;
+  --surface: #1e1e28;
+  --text: #ececf4;
+  --muted: #9a9ab2;
+  --primary: #7c5cff;
+  --primary-dark: #6342e6;
+  --danger: #ff4d6d;
+  --success: #2ed573;
+  --border: #2e2e3e;
+  --tag-bg: #2a244d;
+  --tag-color: #a58cff;
 }
 
 * { box-sizing: border-box; }
@@ -34,6 +50,29 @@ img { max-width: 100%; display: block; }
 .nav-links a { color: var(--text); }
 .nav-links a.active { color: var(--primary); font-weight: 600; }
 
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.theme-toggle:hover {
+  background: var(--bg);
+  border-color: var(--muted);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .btn {
   display: inline-block; padding: 9px 16px; border: none; border-radius: var(--radius);
   background: var(--primary); color: #fff !important; cursor: pointer; font-size: 0.95rem;
@@ -51,7 +90,7 @@ img { max-width: 100%; display: block; }
 .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 input, select, textarea {
   padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-  font: inherit; background: var(--surface);
+  font: inherit; background: var(--surface); color: var(--text);
 }
 .filters input { flex: 1; min-width: 200px; }
 textarea { min-height: 80px; }
@@ -63,7 +102,7 @@ textarea { min-height: 80px; }
 .product-name { color: var(--text); font-weight: 600; }
 .tag {
   align-self: flex-start; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em;
-  background: #efeafd; color: var(--primary); padding: 2px 8px; border-radius: 999px;
+  background: var(--tag-bg); color: var(--tag-color); padding: 2px 8px; border-radius: 999px;
 }
 
 .row { display: flex; gap: 10px; align-items: center; }
@@ -71,6 +110,8 @@ textarea { min-height: 80px; }
 .grow { flex: 1; }
 .muted { color: var(--muted); }
 .error { color: var(--danger); }
+.field-error { font-size: 0.85rem; margin-top: -6px; margin-bottom: 2px; }
+input.input-error { border-color: var(--danger); outline-color: var(--danger); }
 .success { color: var(--success); }
 .loader { text-align: center; color: var(--muted); padding: 40px; }
 
@@ -99,6 +140,144 @@ textarea { min-height: 80px; }
 
 .empty { text-align: center; padding: 60px 0; }
 .footer { text-align: center; color: var(--muted); padding: 24px; border-top: 1px solid var(--border); }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 16px; backdrop-filter: blur(2px);
+}
+.modal-content {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  max-width: 440px; width: 100%; padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.modal-actions {
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;
+}
+
+.wishlist-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+.wishlist-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: var(--bg);
+}
+.wishlist-btn.active {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: #fdf2f4;
+}
+
+.btn-danger-hover:hover {
+  background: var(--danger) !important;
+  border-color: var(--danger) !important;
+  color: #fff !important;
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+  pointer-events: none;
+  max-width: calc(100vw - 48px);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1c1c28;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  font-size: 0.9rem;
+  font-weight: 500;
+  pointer-events: auto;
+  animation: toast-slide-in 0.25s ease-out;
+}
+
+.toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.toast-message {
+  word-break: break-word;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .toast-container {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+    align-items: center;
+  }
+  .toast {
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+  }
+}
+
+/* ── Product Reviews ── */
+.reviews-section { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 20px; }
+.reviews-section h3 { margin: 0 0 16px; font-size: 1.1rem; }
+.reviews-section h4 { margin: 20px 0 10px; font-size: 1rem; }
+
+.review-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.review-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.review-stars { color: #f5a623; font-size: 1rem; letter-spacing: 2px; }
+.review-author { font-weight: 600; font-size: 0.9rem; }
+.review-date { font-size: 0.8rem; }
+.review-comment { margin: 0; line-height: 1.5; }
+
+.review-form { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+.review-form label { font-size: 0.875rem; font-weight: 600; }
+.review-form select, .review-form textarea { width: 100%; }
 
 @media (max-width: 600px) {
   .navbar {
